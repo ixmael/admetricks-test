@@ -8,9 +8,3 @@ import { RouterView } from 'vue-router'
 
   <RouterView />
 </template>
-
-<style scoped>
-header {
-  background-color: #fff;
-}
-</style>
