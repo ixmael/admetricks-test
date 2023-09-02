@@ -67,6 +67,9 @@
         <div class="item5"></div>
       </div>
     </div>
+    <div class="triangles triangle1"></div>
+    <div class="triangles triangle2"></div>
+    <div class="triangles triangle3"></div>
   </main>
 </template>
 
@@ -229,44 +232,81 @@ main {
         margin: 0;
 
         &.item1 {
-          width: 300px;
-          height: 150px;
-          top: 50px;
-          left: 17px;
+          width: 30%;
+          height: 20%;
+          top: 5%;
+          left: 1%;
         }
 
         &.item2 {
-          width: 500px;
-          height: 400px;
-          left: 400px;
-          top: 50px;
+          width: 50%;
+          height: 40%;
+          left: 33%;
+          top: 5%;
         }
 
         &.item3 {
-          width: 150px;
-          height: 450px;
+          width: 15%;
+          height: 45%;
           right: 0;
           top: 0;
         }
 
         &.item4 {
-          width: 300px;
-          height: 665px;
+          width: 30%;
+          height: 60%;
           left: 0;
-          top: 250px;
+          top: 27%;
         }
 
         &.item5 {
-          width: 860px;
-          height: 487px;
+          width: 66%;
+          height: 44%;
           right: 4px;
           top: 500px;
         }
       }
     }
+
     // Squares
   }
+
   // Content
+  .triangles {
+    position: absolute;
+    z-index: 100;
+  }
+
+  .triangle1 {
+    background-image: url('/green.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    left: -90px;
+    top: 86px;
+    width: 250px;
+    height: 253px;
+  }
+
+  .triangle2 {
+    background-image: url('/yellow.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    left: 2%;
+    top: 54%;
+    width: 207px;
+    height: 202px;
+  }
+
+  & .triangle3 {
+    background-image: url('/orange.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    left: -101px;
+    bottom: -85px;
+    width: 359px;
+    height: 366px;
+  }
 }
+
 // Main
 </style>
