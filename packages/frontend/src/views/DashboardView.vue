@@ -2,26 +2,30 @@
 import { onMounted } from 'vue';
 import * as d3 from 'd3';
 
-const aapl = [
-  {
-    date: 1,
-    close: 93.24
-  },
-  {
-    date: 2,
-    close: 94.35
-  },
-  {
-    date: 3,
-    close: 98.84
-  },
-  {
-    date: 4,
-    close: 70,
-  },
-];
+let aapl = [];
 
-onMounted(() => {
+onMounted(async () => {
+
+  aapl = await fetchData()
+    .then(data => data.sort((a, b) => {
+      // Sort by date
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      if (dateA < dateB) {
+        return -1;
+      } else if (dateA > dateB) {
+        return 1;
+      }
+
+      return 0;
+    }))
+    .catch(err => {
+      console.log('error', err);
+      return [];
+    });
+
+  console.log('appl', aapl);
+
   const width = 928;
   const height = 500;
   const marginTop = 20;
@@ -37,23 +41,16 @@ onMounted(() => {
     .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
   // Declare the x (horizontal position) scale.
-  // const x = d3.scaleUtc(d3.extent(aapl, (d: any) => d.date), [marginLeft, width - marginRight]);
-  const x = d3.scaleLinear(d3.extent(aapl, (d: any) => {
-    //const x = d3.scaleUtc(d3.extent(aapl, (d: any) => {
-    return d.date;
-  }), [marginLeft, width - marginRight]);
+  const x = d3.scaleTime(d3.extent(aapl, (d: any) => new Date(d.date)), [marginLeft, width - marginRight]);
 
   // Declare the y (vertical position) scale.
-  // const y = d3.scaleLinear([0, d3.max(aapl, (d: any) => d.close)], [height - marginBottom, marginTop]);
   const y = d3.scaleLinear([0, d3.max(aapl, (d: any) => {
     return d.close;
   })], [height - marginBottom, marginTop]);
 
   // Declare the line generator.
   const line = d3.line()
-    .x((d: any) => {
-      return x(d.date);
-    })
+    .x((d: any) => x(new Date(d.date)))
     .y((d: any) => y(d.close));
 
   // Add the x-axis.
@@ -74,16 +71,51 @@ onMounted(() => {
       .attr("y", 10)
       .attr("fill", "currentColor")
       .attr("text-anchor", "start")
-      .text("Monto ($)"));
+      .text("Precio ($)"));
 
   // Append a path for the line.
-  console.log('aapl', line(aapl));
   svg.append("path")
     .attr("fill", "none")
-    .attr("stroke", "steelblue")
-    .attr("stroke-width", 1.5)
+    .attr("stroke", "#550080")
+    .attr("stroke-width", 1)
+    .style("opacity", 0.5)
     .attr("d", line(aapl));
+
+  svg.selectAll('circle')
+    .data(aapl)
+    .enter()
+    .append("circle")
+    .attr("class", "dot")
+    .attr("r", 2)
+    .attr("cx", function (d) {
+      return x(new Date(d.date));
+    })
+    .attr("cy", function (d) {
+      return y(d.close)
+    })
+    .style("fill", function (d) {
+      return '#550080';
+    })
+    .style("opacity", 1);
 });
+
+const fetchData = async (): Promise<Array<any>> => {
+  const searchParams = new URLSearchParams({
+    from: '2023-01-01',
+    to: '2023-01-20',
+  });
+  const request = new Request(`${import.meta.env.VITE_REST_API}?${searchParams.toString()}`);
+  
+
+  const response = await fetch(request);
+
+  if (response.status) {
+    const data = await response.json();
+    return Promise.resolve(data);
+  }
+
+  return Promise.resolve([]);
+};
 </script>
 
 <template>
@@ -91,6 +123,11 @@ onMounted(() => {
     <div class="dashboard">
       <h1>dashboard</h1>
       <div class="chart">
+        <div class="filters">
+          <div class="initial-date">inicio</div>
+          <div class="final-date">fin</div>
+          <div>shortcuts</div>
+        </div>
         <svg id="chart"></svg>
       </div>
     </div>
@@ -106,6 +143,18 @@ main {
     background-color: #fff;
     padding: 0 15px;
     width: 800px;
+  }
+
+  & .filters {
+    display: flex;
+
+    & .initial-date {
+      background-color: red;
+    }
+
+    & .final-date {
+      background-color: aliceblue;
+    }
   }
 }
 </style>
