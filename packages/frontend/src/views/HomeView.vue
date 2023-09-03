@@ -1,6 +1,98 @@
+<script setup lang="ts">
+import { ref, onMounted, } from 'vue';
+
+const content = ref();
+const contentA = ref();
+const canvas = ref();
+
+const width = ref(0);
+const height = ref(0);
+
+const draw = () => {
+  // Get the size of the canva
+  width.value = content.value.clientWidth;
+  height.value = content.value.clientHeight;
+  canvas.value.width = content.value.clientWidth % 2 === 0 ? content.value.clientWidth - 2 : content.value.clientWidth - 3;
+  canvas.value.height = content.value.clientHeight;
+
+  const a = Math.floor(contentA.value.clientWidth / 5);
+
+  // Draw all the lines
+  const ctx = canvas.value.getContext('2d');
+  for (let i: number = 0; i < 5; i++) {
+    const y = a * i + a;
+    drawLine(ctx, y, 0, y, height.value, 'rgba(255, 255, 255, 0.1)', 1);
+  }
+
+  // Draw a triangle
+  ctx.beginPath();
+  ctx.moveTo(content.value.clientWidth - 160, 230);
+  ctx.lineTo(content.value.clientWidth - 386, 396);
+  ctx.lineTo(content.value.clientWidth + 50, 396);
+  ctx.lineTo(content.value.clientWidth - 160, 230);
+  ctx.strokeStyle = 'rgba(66, 50, 92, 1)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  drawLine(ctx, content.value.clientWidth - 160, 230, content.value.clientWidth - 400, 230, 'rgba(255, 255, 255, 0.1)', 1);
+  drawLine(ctx, content.value.clientWidth - 386, 396, content.value.clientWidth - 525, 500, 'rgba(255, 255, 255, 0.1)', 1);
+
+  //
+  drawLine(ctx, content.value.clientWidth - 200, 400, content.value.clientWidth + 100, 700, 'rgba(255, 0, 0, 0.3)', 1);
+  drawLine(ctx, content.value.clientWidth - 70, 530, content.value.clientWidth + 100, 1200, 'rgba(255, 100, 0, 0.3)', 1);
+  drawLine(ctx, content.value.clientWidth - 28, 698, content.value.clientWidth - 120, 1000, 'rgba(255, 255, 0, 0.3)', 1);
+  drawLine(ctx, content.value.clientWidth + 30, 900, content.value.clientWidth - 120, 1000, 'rgba(255, 100, 0, 0.3)', 1);
+  drawLine(ctx, content.value.clientWidth - 120, 1000, content.value.clientWidth - 300, 1000, 'rgba(22, 53, 60, 1)', 1);
+  drawLine(ctx, content.value.clientWidth - 71, 840, content.value.clientWidth - 300, 1000, 'rgba(22, 53, 60, 1)', 1);
+  drawLine(ctx, content.value.clientWidth - 500, 800, content.value.clientWidth - 300, 1000, 'rgba(22, 53, 60, 1)', 1);
+  drawLine(ctx, content.value.clientWidth - 71, 840, content.value.clientWidth - 200, 840, 'rgba(22, 53, 60, 1)', 1);
+
+  // 
+  ctx.beginPath();
+  ctx.moveTo(contentA.value.clientWidth - 230, 400);
+  ctx.lineTo(contentA.value.clientWidth - 160, 700);
+  ctx.lineTo(contentA.value.clientWidth - 300, 700);
+  ctx.lineTo(contentA.value.clientWidth - 230, 400);
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+};
+
+const drawLine = (ctx: any, x1: number, y1: number, x2: number, y2: number, stroke = 'black', width = 3) => {
+  // start a new path
+  ctx.beginPath();
+
+  // place the cursor from the point the line should be started 
+  ctx.moveTo(x1, y1);
+
+  // draw a line from current cursor position to the provided x,y coordinate
+  ctx.lineTo(x2, y2);
+
+  // set strokecolor
+  ctx.strokeStyle = stroke;
+
+  // set lineWidht 
+  ctx.lineWidth = width;
+
+  // add stroke to the line 
+  ctx.stroke();
+};
+
+onMounted(() => {
+  window.addEventListener('resize', draw);
+  draw();
+});
+
+/*
+$nextTick(() => {
+  draw();
+});
+*/
+</script>
+
 <template>
-  <main>
-    <div class="content">
+  <main id="content" ref="content">
+    <canvas id="extra" ref="canvas" width="1" height="1"></canvas>
+    <div class="content" ref="contentA">
       <div class="top">
         <div class="content">
           <div class="a">Estamos para ayudarte</div>
@@ -65,10 +157,10 @@
         <div class="item3"></div>
         <div class="item4"></div>
         <div class="item5"></div>
+        <div class="triangles triangle2"></div>
       </div>
     </div>
     <div class="triangles triangle1"></div>
-    <div class="triangles triangle2"></div>
     <div class="triangles triangle3"></div>
   </main>
 </template>
@@ -86,8 +178,23 @@ main {
   display: flex;
   justify-content: center;
 
+  & #extra {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    bottom: 0;
+    right: 0;
+  }
+
   & .content {
-    width: 1320px;
+    position: relative;
+    z-index: 10;
+    width: 80%;
+
+    @media (min-width: 1268px) {
+      width: 1268;
+    }
 
     @media (max-width: 800px) {
       margin: 0 1rem;
@@ -157,11 +264,11 @@ main {
           border-color: #fff;
           border-style: solid;
           border-width: 1px;
+          background-color: #18324d;
         }
 
         & .bottom {
           position: absolute;
-          background: transparent;
           left: 10%;
           top: 10%;
           height: 80%;
@@ -174,7 +281,6 @@ main {
           right: 0;
           top: 0;
           z-index: 20;
-          background: #18324d;
           width: 40%;
           height: 99%;
         }
@@ -224,12 +330,13 @@ main {
 
       & div {
         position: absolute;
-        background-color: #fff;
-        border-radius: 30px;
         padding: 0;
-        width: 200px;
-        height: 200px;
         margin: 0;
+
+        &[class^='item'] {
+          background-color: #fff;
+          border-radius: 30px;
+        }
 
         &.item1 {
           width: 30%;
@@ -291,8 +398,8 @@ main {
     background-image: url('/yellow.png');
     background-repeat: no-repeat;
     background-position: center;
-    left: 2%;
-    top: 54%;
+    left: -70px;
+    top: -40px;
     width: 207px;
     height: 202px;
   }
@@ -307,6 +414,4 @@ main {
     height: 366px;
   }
 }
-
-// Main
 </style>
