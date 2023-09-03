@@ -22,16 +22,16 @@ class GetData(Resource):
             to_date = date(int(to_date_items[0]), int(to_date_items[1]), int(to_date_items[2]))
 
         data = []
-        initial_date = from_date
         max_value = random.randint(21, 41)
         current_value = random.randint(7,max_value)
         value = {
-            'date': '{year}-{month}-{day}'.format(year=initial_date.year, month=initial_date.month, day=initial_date.day),
+            'date': '{year}-{month}-{day}'.format(year=from_date.year, month=from_date.month, day=from_date.day),
             'close': current_value,
             'difference': current_value,
         }
         data.append(value)
 
+        from_date = from_date + timedelta(days=1)
         while from_date < to_date:
             current_value = random.randint(7,max_value)
             value = {

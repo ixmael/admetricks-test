@@ -1,12 +1,27 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import * as d3 from 'd3';
 
-let aapl = [];
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
+import { es } from 'date-fns/locale';
+
+const date = ref();
 
 onMounted(async () => {
+  const endDate = new Date();
+  const startDate = new Date(new Date().setDate(endDate.getDate() - 7))
 
-  aapl = await fetchData()
+  date.value = [startDate, endDate];
+});
+
+// Graph the data
+const graph = async () => {
+  // Prepare the from-to range
+  const from = `${date.value[0].getFullYear()}-${date.value[0].getMonth() + 1}-${date.value[0].getDate()}`;
+  const to = `${date.value[1].getFullYear()}-${date.value[1].getMonth() + 1}-${date.value[1].getDate()}`;
+
+  const data = await fetchData(from, to)
     .then(data => data.sort((a, b) => {
       // Sort by date
       const dateA = new Date(a.date);
@@ -24,8 +39,27 @@ onMounted(async () => {
       return [];
     });
 
-  console.log('appl', aapl);
+  updateGraph(data);
+};
 
+// Get the data of the API
+const fetchData = async (from: string, to: string): Promise<Array<any>> => {
+  const searchParams = new URLSearchParams({ from, to });
+  const request = new Request(`${import.meta.env.VITE_REST_API}?${searchParams.toString()}`);
+
+
+  const response = await fetch(request);
+
+  if (response.status) {
+    const data = await response.json();
+    return Promise.resolve(data);
+  }
+
+  return Promise.resolve([]);
+};
+
+// Update the graph
+const updateGraph = (aapl: Array<any>) => {
   const width = 928;
   const height = 500;
   const marginTop = 20;
@@ -97,24 +131,6 @@ onMounted(async () => {
       return '#550080';
     })
     .style("opacity", 1);
-});
-
-const fetchData = async (): Promise<Array<any>> => {
-  const searchParams = new URLSearchParams({
-    from: '2023-01-01',
-    to: '2023-01-20',
-  });
-  const request = new Request(`${import.meta.env.VITE_REST_API}?${searchParams.toString()}`);
-  
-
-  const response = await fetch(request);
-
-  if (response.status) {
-    const data = await response.json();
-    return Promise.resolve(data);
-  }
-
-  return Promise.resolve([]);
 };
 </script>
 
@@ -124,9 +140,13 @@ const fetchData = async (): Promise<Array<any>> => {
       <h1>dashboard</h1>
       <div class="chart">
         <div class="filters">
-          <div class="initial-date">inicio</div>
-          <div class="final-date">fin</div>
-          <div>shortcuts</div>
+          <div class="initial-date">
+            <VueDatePicker v-model="date" max-date="new Date()" :enableTimePicker="false" locale="es-MX"
+              :format-locale="es" format="dd/MM/yyyy" range></VueDatePicker>
+          </div>
+          <button @click="graph">
+            graficar
+          </button>
         </div>
         <svg id="chart"></svg>
       </div>
@@ -147,14 +167,6 @@ main {
 
   & .filters {
     display: flex;
-
-    & .initial-date {
-      background-color: red;
-    }
-
-    & .final-date {
-      background-color: aliceblue;
-    }
   }
 }
 </style>
