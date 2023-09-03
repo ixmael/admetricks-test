@@ -7,6 +7,7 @@ import '@vuepic/vue-datepicker/dist/main.css';
 import { es } from 'date-fns/locale';
 
 const date = ref();
+const noData = ref(true);
 
 onMounted(async () => {
   const endDate = new Date();
@@ -35,7 +36,7 @@ const graph = async () => {
       return 0;
     }))
     .catch(err => {
-      console.log('error', err);
+      console.error('error', err);
       return [];
     });
 
@@ -60,77 +61,85 @@ const fetchData = async (from: string, to: string): Promise<Array<any>> => {
 
 // Update the graph
 const updateGraph = (aapl: Array<any>) => {
-  const width = 928;
-  const height = 500;
-  const marginTop = 20;
-  const marginRight = 30;
-  const marginBottom = 30;
-  const marginLeft = 40;
+  if (aapl.length > 0) {
+    noData.value = false;
 
-  const svg = d3
-    .select('svg#chart')
-    .attr('width', width)
-    .attr('height', height)
-    .attr("viewBox", [0, 0, width, height])
-    .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
+    const width = 928;
+    const height = 500;
+    const marginTop = 20;
+    const marginRight = 30;
+    const marginBottom = 30;
+    const marginLeft = 40;
 
-  // Declare the x (horizontal position) scale.
-  const x = d3.scaleTime(d3.extent(aapl, (d: any) => new Date(d.date)), [marginLeft, width - marginRight]);
+    const svg = d3
+      .select('svg#chart')
+      .attr('width', width)
+      .attr('height', height)
+      .attr("viewBox", [0, 0, width, height])
+      .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
-  // Declare the y (vertical position) scale.
-  const y = d3.scaleLinear([0, d3.max(aapl, (d: any) => {
-    return d.close;
-  })], [height - marginBottom, marginTop]);
+    svg.selectAll('*').remove();
 
-  // Declare the line generator.
-  const line = d3.line()
-    .x((d: any) => x(new Date(d.date)))
-    .y((d: any) => y(d.close));
+    // Declare the x (horizontal position) scale.
+    const x = d3.scaleTime(d3.extent(aapl, (d: any) => new Date(d.date)), [marginLeft, width - marginRight]);
 
-  // Add the x-axis.
-  svg.append("g")
-    .attr("transform", `translate(0,${height - marginBottom})`)
-    .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
+    // Declare the y (vertical position) scale.
+    const y = d3.scaleLinear([0, d3.max(aapl, (d: any) => {
+      return d.close;
+    })], [height - marginBottom, marginTop]);
 
-  // Add the y-axis, remove the domain line, add grid lines and a label.
-  svg.append("g")
-    .attr("transform", `translate(${marginLeft},0)`)
-    .call(d3.axisLeft(y).ticks(height / 40))
-    .call((g: any) => g.select(".domain").remove())
-    .call((g: any) => g.selectAll(".tick line").clone()
-      .attr("x2", width - marginLeft - marginRight)
-      .attr("stroke-opacity", 0.1))
-    .call((g: any) => g.append("text")
-      .attr("x", -marginLeft)
-      .attr("y", 10)
-      .attr("fill", "currentColor")
-      .attr("text-anchor", "start")
-      .text("Precio ($)"));
+    // Declare the line generator.
+    const line = d3.line()
+      .x((d: any) => x(new Date(d.date)))
+      .y((d: any) => y(d.close));
 
-  // Append a path for the line.
-  svg.append("path")
-    .attr("fill", "none")
-    .attr("stroke", "#550080")
-    .attr("stroke-width", 1)
-    .style("opacity", 0.5)
-    .attr("d", line(aapl));
+    // Add the x-axis.
+    svg.append("g")
+      .attr("transform", `translate(0,${height - marginBottom})`)
+      .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
 
-  svg.selectAll('circle')
-    .data(aapl)
-    .enter()
-    .append("circle")
-    .attr("class", "dot")
-    .attr("r", 2)
-    .attr("cx", function (d) {
-      return x(new Date(d.date));
-    })
-    .attr("cy", function (d) {
-      return y(d.close)
-    })
-    .style("fill", function (d) {
-      return '#550080';
-    })
-    .style("opacity", 1);
+    // Add the y-axis, remove the domain line, add grid lines and a label.
+    svg.append("g")
+      .attr("transform", `translate(${marginLeft},0)`)
+      .call(d3.axisLeft(y).ticks(height / 40))
+      .call((g: any) => g.select(".domain").remove())
+      .call((g: any) => g.selectAll(".tick line").clone()
+        .attr("x2", width - marginLeft - marginRight)
+        .attr("stroke-opacity", 0.1))
+      .call((g: any) => g.append("text")
+        .attr("x", -marginLeft)
+        .attr("y", 10)
+        .attr("fill", "currentColor")
+        .attr("text-anchor", "start")
+        .text("Precio ($)"));
+
+    // Append a path for the line.
+    svg.append("path")
+      .attr("fill", "none")
+      .attr("stroke", "#550080")
+      .attr("stroke-width", 1)
+      .style("opacity", 0.5)
+      .attr("d", line(aapl));
+
+    svg.selectAll('circle')
+      .data(aapl)
+      .enter()
+      .append("circle")
+      .attr("class", "dot")
+      .attr("r", 2)
+      .attr("cx", function (d) {
+        return x(new Date(d.date));
+      })
+      .attr("cy", function (d) {
+        return y(d.close)
+      })
+      .style("fill", function (d) {
+        return '#550080';
+      })
+      .style("opacity", 1);
+  } else {
+    noData.value = true;
+  }
 };
 </script>
 
@@ -148,6 +157,7 @@ const updateGraph = (aapl: Array<any>) => {
             graficar
           </button>
         </div>
+        <div v-if="noData">no ha seleccionadon un rango para graficar</div>
         <svg id="chart"></svg>
       </div>
     </div>
@@ -158,6 +168,14 @@ const updateGraph = (aapl: Array<any>) => {
 main {
   display: flex;
   justify-content: center;
+
+  & h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    padding: 1rem 0;
+  }
 
   & .dashboard {
     background-color: #fff;
