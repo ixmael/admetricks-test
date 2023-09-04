@@ -9,20 +9,26 @@ const width = ref(0);
 const height = ref(0);
 
 const draw = () => {
-  // Get the size of the canva
+  // Get the size of main container
   width.value = content.value.clientWidth;
   height.value = content.value.clientHeight;
+
+  // Set a pixel less for each side
   canvas.value.width = content.value.clientWidth % 2 === 0 ? content.value.clientWidth - 2 : content.value.clientWidth - 3;
   canvas.value.height = content.value.clientHeight;
 
-  const a = Math.floor(contentA.value.clientWidth / 5);
+  // Calculate size of the container
+  const a = Math.floor(contentA.value.clientWidth / 4);
+  const delay = Math.floor((width.value - contentA.value.clientWidth) / 2);
+
+  const ctx = canvas.value.getContext('2d');
 
   // Draw all the lines
-  const ctx = canvas.value.getContext('2d');
-  for (let i: number = 0; i < 5; i++) {
-    const y = a * i + a;
-    drawLine(ctx, y, 0, y, height.value, 'rgba(255, 255, 255, 0.1)', 1);
-  }
+  drawLine(ctx, delay + 6, 0, delay + 6, height.value - 150, 'rgba(255, 255, 255, 0.1)', 1);
+  drawLine(ctx, (a) + delay - 1, 0, (a) + delay - 1, height.value - 150, 'rgba(255, 255, 255, 0.1)', 1);
+  drawLine(ctx, (2 * a) + delay, 0, (2 * a) + delay, height.value - 150, 'rgba(255, 255, 255, 0.1)', 1);
+  drawLine(ctx, (3 * a) + delay - 18, 0, (3 * a) + delay - 18, height.value - 150, 'rgba(255, 255, 255, 0.1)', 1);
+  drawLine(ctx, (4 * a) + delay, 0, (4 * a) + delay - 18, height.value - 150, 'rgba(255, 255, 255, 0.1)', 1);
 
   // Draw a triangle
   ctx.beginPath();
@@ -108,6 +114,7 @@ $nextTick(() => {
             <a class="demo-call" href="#">Solicitar demo</a>
             <a class="functionalities" href="#">Ver funcionalidades</a>
           </div>
+          <div class="color-bar"></div>
         </div>
         <div class="topSquares">
           <div class="bottom"></div>
@@ -168,8 +175,7 @@ $nextTick(() => {
 <style scoped lang="scss">
 main {
   position: relative;
-  padding-top: 37.5rem;
-  background-color: #fff;
+  padding-top: 36rem;
   background-image: url('/background.png');
   background-position-x: 40%;
   background-position-y: 0;
@@ -177,6 +183,7 @@ main {
   padding-bottom: 5vh;
   display: flex;
   justify-content: center;
+  overflow: hidden;
 
   & #extra {
     position: absolute;
@@ -190,7 +197,7 @@ main {
   & .content {
     position: relative;
     z-index: 10;
-    width: 80%;
+    width: 930px;
 
     @media (min-width: 1268px) {
       width: 1268;
@@ -210,6 +217,8 @@ main {
       & .content {
         color: #fff;
         width: 100%;
+        padding: 0 0 0 25px;
+        position: relative;
 
         & .a {
           color: #00d4ff;
@@ -220,12 +229,17 @@ main {
         & h2 {
           font-size: 1.7rem;
           font-weight: bold;
+          line-height: 2.7rem;
+          position: relative;
+          z-index: 10;
         }
 
         & .b {
-          font-size: 1rem;
+          font-size: 0.9rem;
           margin-top: 45px;
           margin-bottom: 1rem;
+          line-height: 1.3rem;
+          color: rgba(255, 255, 255, 0.7);
 
           & .remark {
             font-weight: bold;
@@ -236,13 +250,25 @@ main {
         & .demo-call {
           color: #000;
           background-color: #00d4ff;
-          padding: 9px 35px 20px 35px;
+          padding: 10px 30px 10px 30px;
           border-radius: 20px;
           text-decoration: none;
           font-weight: bold;
           display: inline-block;
           margin-right: 15px;
           font-size: 0.8125rem;
+        }
+
+        & .color-bar {
+          background: rgb(0, 119, 160);
+          background: linear-gradient(90deg, rgba(0, 119, 160, 1) 0%, rgba(67, 112, 0, 1) 100%);
+          position: absolute;
+          width: 250px;
+          height: 15px;
+          left: 130px;
+          top: 100px;
+          border-radius: 10px;
+          z-index: 1;
         }
 
         & .functionalities {
@@ -290,7 +316,7 @@ main {
     .details {
       display: flex;
       justify-content: space-evenly;
-      align-items: center;
+      align-items: flex-start;
       margin-top: 45px;
       margin-bottom: 150px;
 

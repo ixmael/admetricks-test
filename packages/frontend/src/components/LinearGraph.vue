@@ -12,7 +12,8 @@ watch(
     data,
     (newData, _) => {
         updateGraph(newData);
-    })
+    }
+);
 
 // Update the graph
 const updateGraph = (aapl: Array<any>) => {
@@ -97,12 +98,19 @@ const updateGraph = (aapl: Array<any>) => {
 <template>
     <div class="linear-graph">
         <svg id="chart" width="0" height="0"></svg>
-        <div class="no-data" v-if="data.length === 0">No hay datos para graficar</div>
+        <div class="no-data" v-if="data.length === 0">
+            No hay datos para graficar
+        </div>
     </div>
 </template>
 
 <style lang="scss">
 .linear-graph {
+    #chart {
+        padding: 0;
+        margin: 0;
+    }
+
     & .no-data {
         color: #e11c1c;
         text-align: center;
