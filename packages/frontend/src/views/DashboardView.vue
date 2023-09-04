@@ -43,12 +43,37 @@ const graph = async () => {
   updateGraph(data);
 };
 
+const downloadFile = async () => {
+  // Prepare the from-to range
+  const from = `${date.value[0].getFullYear()}-${date.value[0].getMonth() + 1}-${date.value[0].getDate()}`;
+  const to = `${date.value[1].getFullYear()}-${date.value[1].getMonth() + 1}-${date.value[1].getDate()}`;
+
+  // Prepare the query
+  const searchParams = new URLSearchParams({ from, to });
+  const request = new Request(`${import.meta.env.VITE_REST_API}/document?${searchParams.toString()}`);
+  const response = await fetch(request);
+
+  if (response.status) {
+    const text = await response.text();
+    const blob = new Blob([text], { type: 'application/csv' });
+
+    const today = new Date();
+
+    const fromLabel = `${date.value[0].getFullYear()}${String(date.value[0].getMonth() + 1).padStart(2, '0')}${String(date.value[0].getDate()).padStart(2, '0')}`;
+    const toLabel = `${date.value[1].getFullYear()}${String(date.value[1].getMonth() + 1).padStart(2, '0')}${String(date.value[1].getDate()).padStart(2, '0')}`;
+
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `admetricks_${today.getTime()}_${fromLabel}-${toLabel}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+}
+
 // Get the data of the API
 const fetchData = async (from: string, to: string): Promise<Array<any>> => {
   const searchParams = new URLSearchParams({ from, to });
   const request = new Request(`${import.meta.env.VITE_REST_API}?${searchParams.toString()}`);
-
-
   const response = await fetch(request);
 
   if (response.status) {
@@ -111,7 +136,7 @@ const updateGraph = (aapl: Array<any>) => {
         .attr("y", 10)
         .attr("fill", "currentColor")
         .attr("text-anchor", "start")
-        .text("Precio ($)"));
+        .text("Pesos Chilenos ($)"));
 
     // Append a path for the line.
     svg.append("path")
@@ -149,15 +174,18 @@ const updateGraph = (aapl: Array<any>) => {
       <h1>dashboard</h1>
       <div class="chart">
         <div class="filters">
-          <div class="initial-date">
+          <div>
             <VueDatePicker v-model="date" max-date="new Date()" :enableTimePicker="false" locale="es-MX"
               :format-locale="es" format="dd/MM/yyyy" range></VueDatePicker>
           </div>
           <button @click="graph">
             graficar
           </button>
+          <button @click="downloadFile">
+            descargar csv
+          </button>
         </div>
-        <div v-if="noData">no ha seleccionadon un rango para graficar</div>
+        <div class="no-data" v-if="noData">No ha seleccionadon un rango para graficar.</div>
         <svg id="chart"></svg>
       </div>
     </div>
@@ -185,6 +213,20 @@ main {
 
   & .filters {
     display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+
+    &>* {
+      margin-right: 5px;
+    }
+
+    &>button {
+      text-transform: uppercase;
+    }
+  }
+
+  & .no-data {
+    text-align: center;
   }
 }
 </style>
