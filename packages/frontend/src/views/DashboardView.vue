@@ -175,7 +175,7 @@ const updateGraph = (aapl: Array<any>) => {
       <div class="chart">
         <div class="filters">
           <div>
-            <VueDatePicker v-model="date" max-date="new Date()" :enableTimePicker="false" locale="es-MX"
+            <VueDatePicker v-model="date" :min-date="new Date(2020, 0, 1)" :max-date="new Date()" :enableTimePicker="false" locale="es-MX"
               :format-locale="es" format="dd/MM/yyyy" range></VueDatePicker>
           </div>
           <button @click="graph">
