@@ -16,21 +16,13 @@ load_data(config['repository']['data_file'])
 # Setup the RestAPI Server
 app = Flask(config['restapi']['name'])
 
-# 
+#
 app.register_blueprint(json_blueprint)
 app.register_blueprint(document_blueprint)
 
+# Development
 if __name__ == '__main__':
-    debug = True
-    port = 5000
-
-    # Configuration for the production environment
-    if config['environment'] == 'production':
-        debug = False
-        port = config['restapi']['port']
-    
     # Start the RestAPI server
     app.run(
-        debug=debug,
-        port=port,
+        debug=True,
     )
