@@ -10,6 +10,9 @@ python = "^3.10"
 flask = "^2.3.3"
 flask-restful = "^0.3.10"
 flask-cors = "^4.0.0"
+flask-restplus = "^0.13.0"
+toml = "^0.10.2"
+werkzeug = "^2.3.7"
 
 
 [build-system]
