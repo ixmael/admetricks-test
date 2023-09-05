@@ -1,1 +1,13 @@
 node_modules
+__pycache__
+
+# 
+.env
+.env.toml
+
+# Terraform
+infrastructure/terraform/.terraform.lock.hcl
+infrastructure/terraform/.terraform/
+infrastructure/terraform/terraform.tfstate
+infrastructure/terraform/terraform.tfstate.backup
+infrastructure/terraform/terraform.tfvars

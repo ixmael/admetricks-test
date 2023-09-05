@@ -1,0 +1,117 @@
+openapi: 3.1.0
+info:
+  title: Admetrick Fullstack Test RestAPI
+  description: |-
+    RestAPI
+
+  # termsOfService: http://swagger.io/terms/
+  contact:
+    email: hola@irm.mx
+  #license:
+  #  name: Apache 2.0
+  #  url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: https://admetricks.irm.mx/api
+  - url: http://localhost:9000/
+tags:
+  - name: amount
+    description: The value of a USD in CLP
+paths:
+  /:
+    get:
+      tags:
+        - amount
+      summary: Filter amounts
+      description: This filters all the values of a USD througt a range of dates
+      parameters:
+        - name: from
+          in: url
+          required: false
+          description: The date where the filter starts to recollect the values
+          schema:
+            type: string
+            examples:
+              - 2020-01-01
+              - 2023-01-01
+        - name: to
+          in: url
+          required: false
+          description: The date where the filter stops to recollect the values
+          schema:
+            type: string
+            examples:
+              - 2020-01-01
+              - 2023-01-01
+      responses:
+        '200':
+          description: The filtered values of USD in CLP 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/components/schemas/USDInCLP'
+        '5xx':
+          description: A server error
+  /document:
+    get:
+      tags:
+        - amount
+      summary: Document with the filtered amounts
+      description: This provide a CSV file with all the filtered values of a USD througt a range of dates
+      parameters:
+        - name: from
+          in: url
+          required: false
+          description: The date where the filter starts to recollect the values
+          schema:
+            type: string
+            examples:
+              - 2020-01-01
+              - 2023-01-01
+        - name: to
+          in: url
+          required: false
+          description: The date where the filter stops to recollect the values
+          schema:
+            type: string
+            examples:
+              - 2020-01-01
+              - 2023-01-01
+      responses:
+        '200':
+          description: The filtered values of USD in CLP 
+          content:
+            application/csv:
+              schema:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/components/schemas/USDInCLP'
+        '5xx':
+          description: A server error
+
+components:
+  schemas:
+    USDInCLP:
+      type: object
+      properties:
+        date:
+          type: string
+          description: The day of the value
+          examples:
+            - 2023-01-01
+        close:
+          type: number
+          description: The value of a USD in CLP
+          examples:
+            - 28.7
+            - 23
+        difference:
+          type: number
+          description: The difference between the current value of a USD and the previous day value of the USD
+          examples:
+            - 3.2
+            - -2.1

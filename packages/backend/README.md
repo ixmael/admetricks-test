@@ -1,21 +1,20 @@
 # Backend (Full Stack Dev Admetricks)
-This application implements a Rest API writed with **Python 3**.
+This application implements a Rest API writed with **python 3.10** and **poetry** to manage the dependencies.
 
-The endopoints of this Rest API are:
-* Get a json data filtered by from and to date, in the default path (/).
-* Get a CSV file data filtered by from an to date in the document path (/document).
+The endopoints of this are:
+* [Get *JSON* data in localhost](http://localhost:5000): Get a json data filtered by from-to dates filter.
+* [Get *CSV* data file in localhost](http://localhost:5000/document/): Get a CSV file data filtered by from-to dates filter.
 
 ## Setup
-First, install the dependencies with:
+This project requires a config file called *.env.toml* placed in the current path. You have an example and the description of the configurations values in the *.env.toml.example* file.
+
+Now, you have to install the dependencies with:
 ```sh
 poetry install
 ```
 
-### Work with the project
-
+### Run in development 
+If you require to run the *RestAPI* in development mode execute:
 ```sh
 poetry run python restapi.py
 ```
-
-## Data source
-I got the historical data in [USD-Chilean Pesos historical data](https://mx.investing.com/currencies/usd-clp-historical-data) and stored in the file **data/source.csv**.
