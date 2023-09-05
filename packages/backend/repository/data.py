@@ -36,6 +36,7 @@ def get_data(from_date, to_date):
             difference = 0
 
             # Check if this has an element to compare
+            difference = 0
             if len(data) > 0:
                 difference = dataSource[hashedDate] - data[:1][0]['close']
 
@@ -47,6 +48,7 @@ def get_data(from_date, to_date):
                     day=from_date.day
                 ),
                 # The difference respect the previous value
+                'difference': difference,
                 'close': dataSource[hashedDate] + difference,
             }
 

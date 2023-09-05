@@ -10,8 +10,6 @@ document_blueprint = Blueprint('document', 'document', url_prefix='/document')
 
 @document_blueprint.route('/', methods=['GET'])
 def get_document_data():
-    '''
-    '''
     from_date = datetime(2023, 1, 1, 0, 0, 0)
     if 'from' in request.args and not request.args['from'] == '':
         from_date_items = request.args['from'].split('-')
