@@ -19,12 +19,8 @@ const data = ref([]);
 
 // Graph the data
 const graph = async () => {
-  // Prepare the from-to range
-  const from = `${date.value[0].getFullYear()}-${date.value[0].getMonth() + 1}-${date.value[0].getDate()}`;
-  const to = `${date.value[1].getFullYear()}-${date.value[1].getMonth() + 1}-${date.value[1].getDate()}`;
-
   // Get data from the RestAPI
-  data.value = await fetchData(from, to)
+  data.value = await fetchData(date.value[0], date.value[1])
     .then(data => data.sort((a, b) => {
       // Sort by date
       const dateA = new Date(a.date);
@@ -44,8 +40,18 @@ const graph = async () => {
 };
 
 // Get the data of the API
-const fetchData = async (from: string, to: string): Promise<Array<any>> => {
-  const searchParams = new URLSearchParams({ from, to });
+const fetchData = async (from: Date | null, to: Date | null): Promise<Array<any>> => {
+  const filters: any = {};
+
+  // Prepare the from-to range
+  if (from) {
+    filters.from = `${from.getFullYear()}-${from.getMonth() + 1}-${from.getDate()}`
+  }
+  if (to) {
+    filters.to = `${to.getFullYear()}-${to.getMonth() + 1}-${to.getDate()}`;
+  }
+
+  const searchParams = new URLSearchParams(filters);
   const request = new Request(`${import.meta.env.VITE_REST_API}?${searchParams.toString()}`);
   const response = await fetch(request);
 
@@ -69,7 +75,7 @@ const fetchData = async (from: string, to: string): Promise<Array<any>> => {
               :enableTimePicker="false" locale="es-MX" :format-locale="es" format="dd/MM/yyyy" range></VueDatePicker>
           </div>
           <button class="graph" @click="graph">
-            graficar
+            Obtener datos
           </button>
           <DownloadData class="download" :date="date" />
         </div>

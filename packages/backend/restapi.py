@@ -1,4 +1,3 @@
-import random
 from datetime import date, timedelta, datetime
 import csv
 
@@ -43,7 +42,7 @@ def get_data(from_date, to_date):
             difference = 0
 
             # Check if this has an element to compare
-            if len(data) > 1:
+            if len(data) > 0:
                 difference = dataSource[hashedDate] - data[:1][0]['close']
 
             # Prepare the value
@@ -53,8 +52,8 @@ def get_data(from_date, to_date):
                     month=from_date.month,
                     day=from_date.day
                 ),
-                'close': dataSource[hashedDate],
-                'difference': difference,
+                # The difference respect the previous value
+                'close': dataSource[hashedDate] + difference,
             }
 
             # Add the value
@@ -104,7 +103,9 @@ class GetDataAsFile(Resource):
         to_name = '{}{}{}'.format(to_date.year, to_date.month + 1, to_date.day)
         file_generated = './tmp/{}_{}-{}.csv'.format(hashed_date_name, from_name, to_name)
         with open(file_generated, 'w') as csvfile:
-            csv.DictWriter(csvfile, fieldnames=['date', 'difference', 'close']).writerows(data)
+            writer = csv.DictWriter(csvfile, fieldnames=['date', 'difference', 'close'])
+            writer.writeheader()
+            writer.writerows(data)
 
         return send_file(file_generated)
 
