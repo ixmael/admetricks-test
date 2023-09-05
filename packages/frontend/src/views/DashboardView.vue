@@ -15,7 +15,7 @@ const date = ref([
 ]);
 
 // Default data
-const data = ref([]);
+const data = ref([] as Array<any>);
 
 // Graph the data
 const graph = async () => {

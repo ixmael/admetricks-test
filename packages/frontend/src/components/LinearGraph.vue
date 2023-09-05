@@ -3,14 +3,17 @@ import { watch, toRef } from 'vue';
 import * as d3 from 'd3';
 
 const props = defineProps({
-    data: Array<any>,
+    data: {
+        type: Array<any>,
+        required: true,
+    },
 });
 
 const data = toRef(props, 'data');
 
 watch(
     data,
-    (newData, _) => {
+    (newData: Array<any>, _) => {
         updateGraph(newData);
     }
 );

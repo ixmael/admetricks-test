@@ -1,6 +1,9 @@
 <script setup lang="ts">
 const props = defineProps({
-    date: Array<Date>,
+    date: {
+        type: Array<Date>,
+        required: true
+    },
 });
 
 const downloadFile = async () => {
