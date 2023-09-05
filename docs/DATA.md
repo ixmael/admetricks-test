@@ -1,16 +1,17 @@
-# Data 
+# Data
+The data is the *Chilean Pesos* amount of a *United States Dollar* by day from 2020-01-01 to 2023-09-04. I got the historical data from [USD-Chilean Pesos historical data](https://mx.investing.com/currencies/usd-clp-historical-data) and stored in the file **/packages/backend/data/source.csv**.
 
-The RestAPI has only two endopoints:
+When the *RestAPI* stars, it reads the file **/packages/backend/data/source.csv** and load data to a variable that is used to filter the data by date.
+
+The *RestAPI* has only two endopoints:
 * Provide a *json* data with:
-    * Day: The day of the 
-    * Difference: this is a number that represents the difference between the 
-    * Difference between the value of USD in Chilean Pesos in a day and the value of USD in Chilean Pesos in the previous day.
+    * Day: The date of the measure.
+    * Close: The *CLP* value of a *USD*.
+    * Difference: The difference between the *CLP* value of a *USD* in a day and the value of the previous day.
 
 * Provide a CSV file with the data:
-    * Day
-    * Value of the USD in Chilean Pesos
-    * Difference between the value of a day and previous day
+    * Day: The date of the measure.
+    * Close: The *CLP* value of a *USD*.
+    * Difference: The difference between the *CLP* value of a *USD* in a day and the value of the previous day.
 
-All the data are filtered by *from* and *to* dates.
-
-The backend application is in **packages/backend** directory. The detailed instructions to run the API are in the **packages/backend/README.md** file.
+The data are filtered by *from* and *to* dates. If you don't provide the filters, this return all data stored in the **/packages/backend/data/source.csv** file.
