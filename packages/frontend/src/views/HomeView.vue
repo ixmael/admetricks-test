@@ -4,6 +4,7 @@ import { ref, onMounted, } from 'vue';
 const content = ref();
 const contentA = ref();
 const canvas = ref();
+const topSquares = ref();
 
 const width = ref(0);
 const height = ref(0);
@@ -52,12 +53,15 @@ const draw = () => {
   drawLine(ctx, content.value.clientWidth - 500, 800, content.value.clientWidth - 300, 1000, 'rgba(22, 53, 60, 1)', 1);
   drawLine(ctx, content.value.clientWidth - 71, 840, content.value.clientWidth - 200, 840, 'rgba(22, 53, 60, 1)', 1);
 
-  // 
+  //
+  const ts = topSquares.value.getBoundingClientRect();
+  const tsx = Math.floor(ts.x);
+  const tsy = Math.floor(ts.y);
   ctx.beginPath();
-  ctx.moveTo(contentA.value.clientWidth - 230, 400);
-  ctx.lineTo(contentA.value.clientWidth - 160, 700);
-  ctx.lineTo(contentA.value.clientWidth - 300, 700);
-  ctx.lineTo(contentA.value.clientWidth - 230, 400);
+  ctx.moveTo(tsx + 200, tsy - 50);
+  ctx.lineTo(tsx + 150, tsy + 100);
+  ctx.lineTo(tsx + 250, tsy + 100);
+  ctx.lineTo(tsx + 200, tsy - 50);
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
   ctx.lineWidth = 1;
   ctx.stroke();
@@ -87,12 +91,6 @@ onMounted(() => {
   window.addEventListener('resize', draw);
   draw();
 });
-
-/*
-$nextTick(() => {
-  draw();
-});
-*/
 </script>
 
 <template>
@@ -116,7 +114,7 @@ $nextTick(() => {
           </div>
           <div class="color-bar"></div>
         </div>
-        <div class="topSquares">
+        <div class="topSquares" ref="topSquares">
           <div class="bottom"></div>
           <div class="top"></div>
         </div>
