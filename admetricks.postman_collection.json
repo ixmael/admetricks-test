@@ -1,0 +1,97 @@
+{
+	"info": {
+		"_postman_id": "419e75c0-f103-4024-9792-4a1504707e52",
+		"name": "admetricks",
+		"description": "This is the endpoints for the *RestAPI* that provides the value of a **USD** (United States Dollar) in **CLP** (Chilean Pesos).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7448379",
+		"_collection_link": "https://ixmael.postman.co/workspace/Fingerprint~ded7ddad-cccb-4172-87c5-ef40b3eebd92/collection/7448379-419e75c0-f103-4024-9792-4a1504707e52?action=share&source=collection_link&creator=7448379"
+	},
+	"item": [
+		{
+			"name": "USD-CLP",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/?from=2023-01-01&to=2023-01-20",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						""
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "2023-01-01",
+							"description": "Initial date"
+						},
+						{
+							"key": "to",
+							"value": "2023-01-20",
+							"description": "Final date"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "USD-CLP CSV File",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/document?from=2023-01-01&to=2023-01-20",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"document"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "2023-01-01",
+							"description": "Initial date"
+						},
+						{
+							"key": "to",
+							"value": "2023-01-20",
+							"description": "Final date"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://localhost:5000",
+			"type": "string"
+		}
+	]
+}
