@@ -1,5 +1,6 @@
 import toml
 from flask import Flask
+from flask_cors import CORS
 
 from repository.data import load_data
 
@@ -15,6 +16,7 @@ load_data(config['repository']['data_file'])
 
 # Setup the RestAPI Server
 app = Flask(config['restapi']['name'])
+CORS(app)
 
 #
 app.register_blueprint(json_blueprint)
