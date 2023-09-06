@@ -4,6 +4,8 @@ COPY ./packages/backend /app
 
 WORKDIR /app
 
+RUN cp .env.toml.example .env.toml
+
 RUN apk add poetry --no-cache && \
     poetry install --only main
 

@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "https://admetricks.irm.mx/api"
+      "url": "https://admetricks.api.irm.mx/api"
     },
     {
       "url": "http://localhost:9000/"
